@@ -1,6 +1,4 @@
-#pair key generator
-import random, math, time, os, hashlib
-
+import random, time, hashlib
 
 class KeyPair:
     def generatePairNumbers(self):
@@ -57,9 +55,9 @@ class KeyPair:
 
         return (e,N),(d,N)
 
-def encryptFile(Path, n, e): #enkripsi menggunakan RSA
-    startTime = time.time()
-    byteArray = openFile(Path)
+def encryptDigest(n, e): #enkripsi menggunakan RSA
+    # startTime = time.time()
+    byteArray = openFile('hash')
 
     encryptArray = [0 for i in range(len(byteArray))]
 
@@ -72,8 +70,8 @@ def encryptFile(Path, n, e): #enkripsi menggunakan RSA
     with open("encrypted", "w") as encryptedFile:
         encryptedFile.write(encryptString)
     
-    encryptTime = time.time() - startTime
-    return encryptArray, encryptTime
+    # encryptTime = time.time() - startTime
+    return encryptArray
 
 def hashFactory(path):
     hashEngine = hashlib.new('sha1') #inisialisasi objek hash menggunakan sha-1
@@ -87,12 +85,19 @@ def hashFactory(path):
     digest = hashEngine.hexdigest()
     decimalHex = str(int(digest,16)) #jadiin string biar nggk kelamaan pas enkripsi
 
-    return decimalHex
+    with open("hash", "w") as hashedFile:
+        hashedFile.write(decimalHex)
 
-def decryptFile(Path, d,n): #dekripsi menggunakan RSA
-    startTime = time.time()
+    return decimalHex #optional, mau dikomen juga gpp soalnya udah disimpen di file 'hash'
 
-    encryptFile = open(Path, "r").readlines()
+def signer(Path, n, e): #ceritanya si pengirim
+    hashFactory(Path)
+    encryptDigest(n, e)
+
+def decryptDigest(d,n): #dekripsi menggunakan RSA
+    # startTime = time.time()
+
+    encryptFile = open('encrypted', "r").readlines()
     encryptString = encryptFile[0]
     encryptArray = encryptString.split()
 
@@ -107,8 +112,17 @@ def decryptFile(Path, d,n): #dekripsi menggunakan RSA
     with open("decrypted", "w", encoding="utf-8") as decryptedFile:
         decryptedFile.write(decryptString)
 
-    decryptTime = time.time() - startTime
-    return decryptString, decryptTime
+    # decryptTime = time.time() - startTime
+    return decryptString
+
+def verifier(Path,d,n): #ceritanya si penerima
+    hash = hashFactory(Path)
+    digest = decryptDigest(d,n)
+
+    if hash == digest: #ceritanya mau ngecek pesan ini asli apa nggk
+        print("Pesan asli")
+    else:
+        print("Pesan telah diganti")
 
 def openFile(Path):
     file = open(Path, "rb")
@@ -138,5 +152,6 @@ d = 1019
 
 # encryptDecryptFile(n, e, d)
 
-s = hashFactory('text-test.txt')
-print(s,type(s))
+#kalo mau test keaslian pesan, hilangin char paling akhir aja buat test
+signer('text-test.txt',n,e) #komen aja kalo mau test keaslian pesan terus ganti .txt nya
+verifier('text-test.txt',d,n)
