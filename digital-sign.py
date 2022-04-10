@@ -1,5 +1,5 @@
 #pair key generator
-import random, math, time, os
+import random, math, time, os, hashlib
 
 
 class KeyPair:
@@ -75,6 +75,20 @@ def encryptFile(Path, n, e): #enkripsi menggunakan RSA
     encryptTime = time.time() - startTime
     return encryptArray, encryptTime
 
+def hashFactory(path):
+    hashEngine = hashlib.new('sha1') #inisialisasi objek hash menggunakan sha-1
+
+    with open(path, 'rb') as file: 
+        fileBinary = file.read(2**16) #read per 2**16 size block
+        while len(fileBinary) > 0:
+            hashEngine.update(fileBinary) #update hingga EoF file / concate block block 
+            fileBinary = file.read(2**16)
+    
+    digest = hashEngine.hexdigest()
+    decimalHex = str(int(digest,16)) #jadiin string biar nggk kelamaan pas enkripsi
+
+    return decimalHex
+
 def decryptFile(Path, d,n): #dekripsi menggunakan RSA
     startTime = time.time()
 
@@ -94,8 +108,35 @@ def decryptFile(Path, d,n): #dekripsi menggunakan RSA
         decryptedFile.write(decryptString)
 
     decryptTime = time.time() - startTime
-    return decryptArray, decryptTime
+    return decryptString, decryptTime
 
-kP = KeyPair()
-keys = kP.generatePairKey()
-print(keys)
+def openFile(Path):
+    file = open(Path, "rb")
+    data = file.read()
+    file.close()
+
+    byteArray = bytearray(data)
+    return byteArray
+
+# kP = KeyPair()
+# keys = kP.generatePairKey()
+# print(keys)
+
+#############
+# SEMENTARA # 
+n = 3337
+e = 79
+d = 1019
+#############
+
+# def encryptDecryptFile(n, e, d):
+#     enc,etime = encryptFile("text-test.txt", n, e)
+#     print("array enkripsi: ", enc)
+#     print("time : ",round(etime,4))
+#     dec, dtime = decryptFile("encrypted", d,n)
+#     print("array dekripsi : ", dec)
+
+# encryptDecryptFile(n, e, d)
+
+s = hashFactory('text-test.txt')
+print(s,type(s))
