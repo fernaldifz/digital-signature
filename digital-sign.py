@@ -59,10 +59,10 @@ class KeyPair:
         return (e, N), (d, N)
 
 
-def generateHash(path):
+def generateHash(message):
     # inisialisasi objek hash menggunakan sha-1
     hashEngine = hashlib.new('sha1')
-    with open(path, 'rb') as file:
+    with open(message, 'rb') as file:
         fileBinary = file.read(2**16)  # read per 2**16 size block
         while len(fileBinary) > 0:
             # update hingga EoF file / concate block block
@@ -76,7 +76,7 @@ def generateHash(path):
     with open("hash", "w") as hashedFile:
         hashedFile.write(decimalHex)
 
-    # return decimalHex  # optional, mau dikomen juga gpp soalnya udah disimpen di file 'hash'
+    # return decimalHex
 
 
 def encryptDigest(n, e):  # enkripsi menggunakan RSA
@@ -91,17 +91,17 @@ def encryptDigest(n, e):  # enkripsi menggunakan RSA
     signatureString = " "
     signatureString = signatureString.join(signatureArray)
 
-    with open("signature", "w") as signatureFile:
-        signatureFile.write(signatureString)
+    # with open("signature", "w") as signatureFile:
+    #    signatureFile.write(signatureString)
 
     # encryptTime = time.time() - startTime
-    # return signatureArray
+    return signatureString
 
 
-def decryptDigest(d, n):  # dekripsi menggunakan RSA
+def decryptDigest(signature, d, n):  # dekripsi menggunakan RSA
     # startTime = time.time()
 
-    signatureFile = open('signature', "r").readlines()
+    signatureFile = open(signature, "r").readlines()
     signatureString = signatureFile[0]
     signatureArray = signatureString.split()
 
@@ -113,29 +113,40 @@ def decryptDigest(d, n):  # dekripsi menggunakan RSA
     for i in range(len(messageDigestArray)):
         messageDigestString += messageDigestArray[i]
 
-    with open("messageDigest", "w", encoding="utf-8") as messageDigestFile:
-        messageDigestFile.write(messageDigestString)
+    # with open("messageDigest", "w", encoding="utf-8") as messageDigestFile:
+    #    messageDigestFile.write(messageDigestString)
 
     # decryptTime = time.time() - startTime
-    # return messageDigestString
+    return messageDigestString
 
 
-def signing(Path, n, e):  # Pengirim membuat signature
-    generateHash(Path)
-    encryptDigest(n, e)
+def createSignature(message, n, e):  # Pengirim membuat signature
+    generateHash(message)
+    signatureString = encryptDigest(n, e)
+    return signatureString
 
 
-def verifying(Path, d, n):  # Penerima melakukan verifikasi
-    generateHash(Path)
-    decryptDigest(d, n)
+def saveSignature(signatureString):
+    with open("signature", "w") as signatureFile:
+        signatureFile.write(signatureString)
 
-    hash = openFile("hash")
-    digest = openFile("messageDigest")
 
-    print(hash)
+def signing(message, n, e):
+    signatureString = createSignature(message, n, e)
+    saveSignature(signatureString)
+
+
+def verifying(messageSent, signature, d, n):  # Penerima melakukan verifikasi
+    generateHash(messageSent)
+    hashFile = open('hash', "r").readlines()
+    hashString = hashFile[0]
+
+    digest = decryptDigest(signature, d, n)
+
+    print(hashString)
     print(digest)
 
-    if hash == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
+    if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
         print("Pesan asli")
     else:
         print("Pesan telah diganti")
@@ -172,5 +183,7 @@ d = 1019
 
 # kalo mau test keaslian pesan, hilangin char paling akhir aja buat test
 # komen aja kalo mau test keaslian pesan terus ganti .txt nya
+
+
 signing('message.txt', n, e)
-verifying('message.txt', d, n)
+verifying('message.txt', 'signature', d, n)
