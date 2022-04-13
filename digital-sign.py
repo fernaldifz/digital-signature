@@ -131,6 +131,41 @@ def saveSignature(signatureString):
         signatureFile.write(signatureString)
 
 
+def joinSignatureToMessage(message, signatureString):
+    with open(message) as messageFile:
+        if "<ds>" in messageFile.read():
+            signatureJoined = True
+        else:
+            signatureJoined = False
+
+    if (signatureJoined):
+        with open(message, 'r') as messageFile:
+            data = messageFile.readlines()
+        data[1] = "<ds>" + signatureString + "</ds>"
+
+        with open(message, 'w') as messageFile:
+            messageFile.writelines(data)
+    else:
+        with open(message, "a") as messageFile:
+            messageFile.write("\n")
+            messageFile.write("<ds>" + signatureString + "</ds>")
+
+
+def readSignatureInMessage(message):
+    with open(message) as messageFile:
+        if "<ds>" in messageFile.read():
+            signatureJoined = True
+        else:
+            signatureJoined = False
+
+    if (signatureJoined):
+        with open(message, 'r') as messageFile:
+            data = messageFile.readlines()
+            data = data[1]
+        signatureInMessage = data[4:len(data) - 5:]
+        return signatureInMessage
+
+
 def signing(message, n, e):
     signatureString = createSignature(message, n, e)
     saveSignature(signatureString)
@@ -142,9 +177,6 @@ def verifying(messageSent, signature, d, n):  # Penerima melakukan verifikasi
     hashString = hashFile[0]
 
     digest = decryptDigest(signature, d, n)
-
-    print(hashString)
-    print(digest)
 
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
         print("Pesan asli")
@@ -184,6 +216,11 @@ d = 1019
 # kalo mau test keaslian pesan, hilangin char paling akhir aja buat test
 # komen aja kalo mau test keaslian pesan terus ganti .txt nya
 
+# KASUS 1, signature di file terpisah
+# signing('message.txt', n, e)
+# verifying('message.txt', 'signature', d, n)
 
-signing('message.txt', n, e)
-verifying('message.txt', 'signature', d, n)
+# KASUS 2
+signature = createSignature('message.txt', n, e)
+joinSignatureToMessage('message.txt', signature)
+print(readSignatureInMessage('message.txt'))
