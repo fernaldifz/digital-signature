@@ -1,11 +1,14 @@
-import random, time, hashlib
+import random
+import time
+import hashlib
+
 
 class KeyPair:
     def generatePairNumbers(self):
         primes = []
-        p,q,counter = 0,0,0
+        p, q, counter = 0, 0, 0
 
-        for i in range(2**6,2**8):
+        for i in range(2**6, 2**8):
             if self.isPrime(i):
                 primes.append(i)
                 counter += 1
@@ -14,36 +17,36 @@ class KeyPair:
                 break
 
         while p == q:
-            p,q = random.choice(primes),random.choice(primes)
-        
-        print("p dan q sudah ada")
-        return p,q
+            p, q = random.choice(primes), random.choice(primes)
 
-    def isPrime(self,num):
+        print("p dan q sudah ada")
+        return p, q
+
+    def isPrime(self, num):
         if num == 2:
             return True
         elif num < 2:
             return False
         else:
-            for i in range(2,num,1):
+            for i in range(2, num, 1):
                 if num % i == 0:
                     return False
         return True
 
-    def modInverse(self,e, phi):
-        for d in range(1,phi):
+    def modInverse(self, e, phi):
+        for d in range(1, phi):
             if ((e % phi) * (d % phi)) % phi == 1:
                 return d
 
-    def generatePairKey(self): #pembangkit pasangan kunci (privat dan publik)
-        p,q = self.generatePairNumbers()
+    def generatePairKey(self):  # pembangkit pasangan kunci (privat dan publik)
+        p, q = self.generatePairNumbers()
         N = p*q
         phi = (p-1)*(q-1)
 
         print("mulai cari e")
 
         publicKeyCandidate = []
-        for e in range(2,phi//(2**8)):
+        for e in range(2, phi//(2**8)):
             if self.isPrime(e):
                 publicKeyCandidate.append(e)
 
@@ -51,78 +54,92 @@ class KeyPair:
 
         e = random.choice(publicKeyCandidate)
 
-        d = self.modInverse(e,phi)
+        d = self.modInverse(e, phi)
 
-        return (e,N),(d,N)
+        return (e, N), (d, N)
 
-def encryptDigest(n, e): #enkripsi menggunakan RSA
-    # startTime = time.time()
-    byteArray = openFile('hash')
 
-    encryptArray = [0 for i in range(len(byteArray))]
-
-    for i, value in enumerate(byteArray):
-        encryptArray[i] = str(value**e % n)
-    
-    encryptString = " "
-    encryptString = encryptString.join(encryptArray)
-        
-    with open("encrypted", "w") as encryptedFile:
-        encryptedFile.write(encryptString)
-    
-    # encryptTime = time.time() - startTime
-    return encryptArray
-
-def hashFactory(path):
-    hashEngine = hashlib.new('sha1') #inisialisasi objek hash menggunakan sha-1
-
-    with open(path, 'rb') as file: 
-        fileBinary = file.read(2**16) #read per 2**16 size block
+def generateHash(path):
+    # inisialisasi objek hash menggunakan sha-1
+    hashEngine = hashlib.new('sha1')
+    with open(path, 'rb') as file:
+        fileBinary = file.read(2**16)  # read per 2**16 size block
         while len(fileBinary) > 0:
-            hashEngine.update(fileBinary) #update hingga EoF file / concate block block 
+            # update hingga EoF file / concate block block
+            hashEngine.update(fileBinary)
             fileBinary = file.read(2**16)
-    
+
     digest = hashEngine.hexdigest()
-    decimalHex = str(int(digest,16)) #jadiin string biar nggk kelamaan pas enkripsi
+    # jadiin string biar nggk kelamaan pas enkripsi
+    decimalHex = str(int(digest, 16))
 
     with open("hash", "w") as hashedFile:
         hashedFile.write(decimalHex)
 
-    return decimalHex #optional, mau dikomen juga gpp soalnya udah disimpen di file 'hash'
+    # return decimalHex  # optional, mau dikomen juga gpp soalnya udah disimpen di file 'hash'
 
-def signer(Path, n, e): #ceritanya si pengirim
-    hashFactory(Path)
-    encryptDigest(n, e)
 
-def decryptDigest(d,n): #dekripsi menggunakan RSA
+def encryptDigest(n, e):  # enkripsi menggunakan RSA
+    # startTime = time.time()
+    byteArray = openFile('hash')
+
+    signatureArray = [0 for i in range(len(byteArray))]
+
+    for i, value in enumerate(byteArray):
+        signatureArray[i] = str(value**e % n)
+
+    signatureString = " "
+    signatureString = signatureString.join(signatureArray)
+
+    with open("signature", "w") as signatureFile:
+        signatureFile.write(signatureString)
+
+    # encryptTime = time.time() - startTime
+    # return signatureArray
+
+
+def decryptDigest(d, n):  # dekripsi menggunakan RSA
     # startTime = time.time()
 
-    encryptFile = open('encrypted', "r").readlines()
-    encryptString = encryptFile[0]
-    encryptArray = encryptString.split()
+    signatureFile = open('signature', "r").readlines()
+    signatureString = signatureFile[0]
+    signatureArray = signatureString.split()
 
-    decryptArray = [0 for i in range(len(encryptArray))]
-    for i, value in enumerate(encryptArray):
-        decryptArray[i] = chr(int(value)**d % n)
-    
-    decryptString = ""
-    for i in range(len(decryptArray)):
-        decryptString += decryptArray[i]
-    
-    with open("decrypted", "w", encoding="utf-8") as decryptedFile:
-        decryptedFile.write(decryptString)
+    messageDigestArray = [0 for i in range(len(signatureArray))]
+    for i, value in enumerate(signatureArray):
+        messageDigestArray[i] = chr(int(value)**d % n)
+
+    messageDigestString = ""
+    for i in range(len(messageDigestArray)):
+        messageDigestString += messageDigestArray[i]
+
+    with open("messageDigest", "w", encoding="utf-8") as messageDigestFile:
+        messageDigestFile.write(messageDigestString)
 
     # decryptTime = time.time() - startTime
-    return decryptString
+    # return messageDigestString
 
-def verifier(Path,d,n): #ceritanya si penerima
-    hash = hashFactory(Path)
-    digest = decryptDigest(d,n)
 
-    if hash == digest: #ceritanya mau ngecek pesan ini asli apa nggk
+def signing(Path, n, e):  # Pengirim membuat signature
+    generateHash(Path)
+    encryptDigest(n, e)
+
+
+def verifying(Path, d, n):  # Penerima melakukan verifikasi
+    generateHash(Path)
+    decryptDigest(d, n)
+
+    hash = openFile("hash")
+    digest = openFile("messageDigest")
+
+    print(hash)
+    print(digest)
+
+    if hash == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
         print("Pesan asli")
     else:
         print("Pesan telah diganti")
+
 
 def openFile(Path):
     file = open(Path, "rb")
@@ -136,8 +153,9 @@ def openFile(Path):
 # keys = kP.generatePairKey()
 # print(keys)
 
+
 #############
-# SEMENTARA # 
+# SEMENTARA #
 n = 3337
 e = 79
 d = 1019
@@ -152,6 +170,7 @@ d = 1019
 
 # encryptDecryptFile(n, e, d)
 
-#kalo mau test keaslian pesan, hilangin char paling akhir aja buat test
-signer('text-test.txt',n,e) #komen aja kalo mau test keaslian pesan terus ganti .txt nya
-verifier('text-test.txt',d,n)
+# kalo mau test keaslian pesan, hilangin char paling akhir aja buat test
+# komen aja kalo mau test keaslian pesan terus ganti .txt nya
+signing('message.txt', n, e)
+verifying('message.txt', d, n)
