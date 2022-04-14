@@ -139,9 +139,10 @@ def joinSignatureToMessage(message, signatureString):
             signatureJoined = False
 
     if (signatureJoined):
+        numberLines = sum(1 for line in open(message))
         with open(message, 'r') as messageFile:
             data = messageFile.readlines()
-        data[1] = "<ds>" + signatureString + "</ds>"
+        data[numberLines-1] = "<ds>" + signatureString + "</ds>"
 
         with open(message, 'w') as messageFile:
             messageFile.writelines(data)
@@ -153,15 +154,19 @@ def joinSignatureToMessage(message, signatureString):
 
 def readSignatureInMessage(message):
     with open(message) as messageFile:
-        if "<ds>" in messageFile.read():
+        if "<ds>" in messageFile.read():  # cari <ds>
             signatureJoined = True
         else:
             signatureJoined = False
 
+    # ngecek jumlah newlines di txt
+    numberLines = sum(1 for line in open(message))
+
     if (signatureJoined):
         with open(message, 'r') as messageFile:
             data = messageFile.readlines()
-            data = data[1]
+            data = data[numberLines-1]
+        # ceritanya menghilangkan <ds> dan </ds>, jadi dapat isinya aja
         signatureInMessage = data[4:len(data) - 5:]
         return signatureInMessage
 
