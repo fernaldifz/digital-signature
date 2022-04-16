@@ -131,23 +131,23 @@ def saveSignature(signatureString):
         signatureFile.write(signatureString)
 
 
-def joinSignatureToMessage(message, signatureString):
-    with open(message) as messageFile:
+def joinSignatureToMessage(pathMessage, signatureString):
+    with open(pathMessage) as messageFile:
         if "<ds>" in messageFile.read():
             signatureJoined = True
         else:
             signatureJoined = False
 
     if (signatureJoined):
-        numberLines = sum(1 for line in open(message))
-        with open(message, 'r') as messageFile:
+        numberLines = sum(1 for line in open(pathMessage))
+        with open(pathMessage, 'r') as messageFile:
             data = messageFile.readlines()
         data[numberLines-1] = "<ds>" + signatureString + "</ds>"
 
-        with open(message, 'w') as messageFile:
+        with open(pathMessage, 'w') as messageFile:
             messageFile.writelines(data)
     else:
-        with open(message, "a") as messageFile:
+        with open(pathMessage, "a") as messageFile:
             messageFile.write("\n")
             messageFile.write("<ds>" + signatureString + "</ds>")
 
@@ -229,3 +229,4 @@ d = 1019
 signature = createSignature('message.txt', n, e)
 joinSignatureToMessage('message.txt', signature)
 print(readSignatureInMessage('message.txt'))
+# verifying('message.txt', 'signature', d, n)

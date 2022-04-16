@@ -1,0 +1,331 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Dialog</class>
+ <widget class="QDialog" name="Dialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>720</width>
+    <height>512</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Dialog</string>
+  </property>
+  <widget class="QWidget" name="widget" native="true">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>720</width>
+     <height>512</height>
+    </rect>
+   </property>
+   <property name="styleSheet">
+    <string notr="true">QWidget#widget{
+background: #101920;}</string>
+   </property>
+   <widget class="QLabel" name="label">
+    <property name="geometry">
+     <rect>
+      <x>220</x>
+      <y>10</y>
+      <width>271</width>
+      <height>71</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-family: Open Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 40px;
+color: #FCE417;</string>
+    </property>
+    <property name="text">
+     <string>Generate Key</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_6">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>200</y>
+      <width>31</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-family: Open Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 16px;
+/* identical to box height */
+
+
+color: #FCE417;
+</string>
+    </property>
+    <property name="text">
+     <string>Do !</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="e">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>130</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #ffffff;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="savePub">
+    <property name="geometry">
+     <rect>
+      <x>230</x>
+      <y>250</y>
+      <width>121</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #FFE715;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920;</string>
+    </property>
+    <property name="text">
+     <string>Save Public Key</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="genKey">
+    <property name="geometry">
+     <rect>
+      <x>300</x>
+      <y>190</y>
+      <width>131</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #FFE715;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920;</string>
+    </property>
+    <property name="text">
+     <string>Generate Key !</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="sign">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>370</y>
+      <width>91</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #FFE715;
+border-radius: 30;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 33px;
+
+color: #101920;
+</string>
+    </property>
+    <property name="text">
+     <string>Sign File</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="d">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>130</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #ffffff;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_7">
+    <property name="geometry">
+     <rect>
+      <x>140</x>
+      <y>100</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-family: Open Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 16px;
+/* identical to box height */
+
+
+color: #FCE417;
+</string>
+    </property>
+    <property name="text">
+     <string>e value</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_10">
+    <property name="geometry">
+     <rect>
+      <x>310</x>
+      <y>100</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-family: Open Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 16px;
+/* identical to box height */
+
+
+color: #FCE417;
+</string>
+    </property>
+    <property name="text">
+     <string>d value</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>100</y>
+      <width>71</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">font-family: Open Sans;
+font-style: normal;
+font-weight: bold;
+font-size: 16px;
+/* identical to box height */
+
+
+color: #FCE417;
+</string>
+    </property>
+    <property name="text">
+     <string>N value</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="N">
+    <property name="geometry">
+     <rect>
+      <x>480</x>
+      <y>130</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #ffffff;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920</string>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="savePri">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>250</y>
+      <width>121</width>
+      <height>28</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #FFE715;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920;</string>
+    </property>
+    <property name="text">
+     <string>Save Private Key</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="verify">
+    <property name="geometry">
+     <rect>
+      <x>370</x>
+      <y>370</y>
+      <width>91</width>
+      <height>81</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #FFE715;
+border-radius: 30;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 33px;
+
+color: #101920;
+</string>
+    </property>
+    <property name="text">
+     <string>Verify File</string>
+    </property>
+   </widget>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
