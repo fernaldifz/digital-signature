@@ -66,6 +66,7 @@ def generateHash(message):
 
     with open(message, "r") as file:
         lines = file.readlines()
+        hashTemp = lines
     with open(message, "w") as file:
         for line in lines:
             # if line.strip("\n") != '<ds>':
@@ -75,7 +76,6 @@ def generateHash(message):
 
     with open(message, "r") as file:
         lines = file.readlines()
-        # print(lines)
     with open(message, "w") as file:
         for line in lines:
             if line == lines[-1]:
@@ -98,6 +98,10 @@ def generateHash(message):
 
     with open("hash", "w") as hashedFile:
         hashedFile.write(decimalHex)
+
+    with open(message, "w") as file:
+        for line in hashTemp:
+            file.write(line)
 
     return decimalHex
 
@@ -269,7 +273,7 @@ d = 1019
 #verifyingOtherFile('message.txt', 'signature', d, n)
 
 # KASUS 2, signature di message (file sama)
-#signingSameFile('message.txt', n, e)
-#verifyingSameFile('message.txt', d, n)
+signingSameFile('message.txt', n, e)
+verifyingSameFile('message.txt', d, n)
 
 # deleteSignatureInMessage('message.txt')
