@@ -118,12 +118,8 @@ def encryptDigest(n, e):  # enkripsi menggunakan RSA
     return signatureString
 
 
-def decryptDigest(signature, d, n):  # dekripsi menggunakan RSA
+def decryptDigest(signatureArray, d, n):  # dekripsi menggunakan RSA
     # startTime = time.time()
-
-    signatureFile = open(signature, "r").readlines()
-    signatureString = signatureFile[0]
-    signatureArray = signatureString.split()
 
     messageDigestArray = [0 for i in range(len(signatureArray))]
     for i, value in enumerate(signatureArray):
@@ -137,7 +133,6 @@ def decryptDigest(signature, d, n):  # dekripsi menggunakan RSA
     #    messageDigestFile.write(messageDigestString)
 
     # decryptTime = time.time() - startTime
-    print(messageDigestString)
     return messageDigestString
 
 
@@ -147,7 +142,7 @@ def createSignature(message, n, e):  # Pengirim membuat signature
     return signatureString
 
 
-def saveSignature(signatureString):
+def saveSignatureToFile(signatureString):
     with open("signature", "w") as signatureFile:
         signatureFile.write(signatureString)
 
@@ -206,22 +201,47 @@ def deleteSignatureInMessage(message):
                 messageFile.write(line)
 
 
-def signing(message, n, e):
+def signingOtherFile(message, n, e):
     signatureString = createSignature(message, n, e)
-    saveSignature(signatureString)
+    saveSignatureToFile(signatureString)
 
 
-def verifying(messageSent, signature, d, n):  # Penerima melakukan verifikasi
+def verifyingOtherFile(messageSent, signature, d, n):  # Penerima melakukan verifikasi
     generateHash(messageSent)
     hashFile = open('hash', "r").readlines()
     hashString = hashFile[0]
 
-    digest = decryptDigest(signature, d, n)
+    signatureFile = open(signature, "r").readlines()
+    signatureString = signatureFile[0]
+    signatureArray = signatureString.split()
+    digest = decryptDigest(signatureArray, d, n)
 
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
-        print("Pesan asli")
+        print("pesan asli")
     else:
-        print("Pesan telah diganti")
+        messagebox.showinfo("Warning", "Pesan telah diganti!")
+        print("pesan telah diganti!")
+
+
+def signingSameFile(message, n, e):
+    signatureString = createSignature(message, n, e)
+    joinSignatureToMessage('message.txt', signatureString)
+
+
+def verifyingSameFile(messageSent, d, n):
+    signatureArray = readSignatureInMessage(messageSent).split()
+
+    digest = decryptDigest(signatureArray, d, n)
+
+    generateHash(messageSent)
+    hashFile = open('hash', "r").readlines()
+    hashString = hashFile[0]
+
+    if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
+        print("pesan asli")
+    else:
+        messagebox.showinfo("Warning", "Pesan telah diganti!")
+        print("pesan telah diganti!")
 
 
 def openFile(Path):
@@ -244,27 +264,12 @@ e = 79
 d = 1019
 #############
 
-# def encryptDecryptFile(n, e, d):
-#     enc,etime = encryptFile("text-test.txt", n, e)
-#     print("array enkripsi: ", enc)
-#     print("time : ",round(etime,4))
-#     dec, dtime = decryptFile("encrypted", d,n)
-#     print("array dekripsi : ", dec)
-
-# encryptDecryptFile(n, e, d)
-
-# kalo mau test keaslian pesan, hilangin char paling akhir aja buat test
-# komen aja kalo mau test keaslian pesan terus ganti .txt nya
-
 # KASUS 1, signature di file terpisah
-# signing('message.txt', n, e)
-# verifying('message.txt', 'signature', d, n)
+#signingOtherFile('message.txt', n, e)
+#verifyingOtherFile('message.txt', 'signature', d, n)
 
-# KASUS 2
-# generateHash('message.txt')
-# signature = createSignature('message.txt', n, e)
-# joinSignatureToMessage('message.txt', signature)
-print(readSignatureInMessage('message.txt'))
+# KASUS 2, signature di message (file sama)
+#signingSameFile('message.txt', n, e)
+#verifyingSameFile('message.txt', d, n)
+
 # deleteSignatureInMessage('message.txt')
-
-# verifying('message.txt', 'signature', d, n)
