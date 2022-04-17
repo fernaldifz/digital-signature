@@ -199,10 +199,24 @@ def readSignatureInMessage(message):
 def deleteSignatureInMessage(message):
     with open(message, "r") as messageFile:
         lines = messageFile.readlines()
-    with open(message, "w") as messageFile:
+        signatureJoined = False
         for line in lines:
-            if not line.rstrip('\n').startswith('<ds>') and not line.rstrip('\n').endswith('</ds>'):
-                messageFile.write(line)
+            if line.rstrip('\n').startswith('<ds>') and line.rstrip('\n').endswith('</ds>'):
+                signatureJoined = True
+
+    if(signatureJoined == False):
+        messagebox.showinfo(
+            "Warning", "Tidak ada digital signature di message, gagal menghapus digital signature")
+    else:
+        i = 0
+        with open(message, "w") as messageFile:
+            for line in lines:
+                if not line.rstrip('\n').startswith('<ds>') and not line.rstrip('\n').endswith('</ds>'):
+                    if(i != len(lines)-2):
+                        messageFile.write(line)
+                    else:
+                        messageFile.write(line.rstrip('\n'))
+                    i += 1
 
 
 def signingOtherFile(message, n, e):
@@ -273,7 +287,7 @@ d = 1019
 #verifyingOtherFile('message.txt', 'signature', d, n)
 
 # KASUS 2, signature di message (file sama)
-signingSameFile('message.txt', n, e)
-verifyingSameFile('message.txt', d, n)
+#signingSameFile('message.txt', n, e)
+#verifyingSameFile('message.txt', d, n)
 
 # deleteSignatureInMessage('message.txt')
