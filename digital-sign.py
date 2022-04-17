@@ -2,6 +2,8 @@ import random
 import time
 import hashlib
 
+from sqlalchemy import false
+
 
 class KeyPair:
     def generatePairNumbers(self):
@@ -62,10 +64,33 @@ class KeyPair:
 def generateHash(message):
     # inisialisasi objek hash menggunakan sha-1
     hashEngine = hashlib.new('sha1')
+    
+    with open(message, "r") as file:
+        lines = file.readlines()
+    with open(message, "w") as file:
+        for line in lines:
+            # if line.strip("\n") != '<ds>':
+            if not line.rstrip('\n').startswith('<ds>') and not line.rstrip('\n').endswith('</ds>'):
+                file.write(line)
+                print('aku ditambah : ' + line)
+    
+    
+    with open(message, "r") as file:
+        lines = file.readlines()
+        print(lines)
+    with open(message, "w") as file:
+        for line in lines:
+            if line == lines[-1]:
+                file.write(line.strip())
+            else:
+                file.write(line)
+                
     with open(message, 'rb') as file:
         fileBinary = file.read(2**16)  # read per 2**16 size block
-        while len(fileBinary) > 0:
+        
+        while (len(fileBinary) > 0):
             # update hingga EoF file / concate block block
+            
             hashEngine.update(fileBinary)
             fileBinary = file.read(2**16)
 
@@ -76,25 +101,21 @@ def generateHash(message):
     with open("hash", "w") as hashedFile:
         hashedFile.write(decimalHex)
 
-    # return decimalHex
-
+    return decimalHex
 
 def encryptDigest(n, e):  # enkripsi menggunakan RSA
-    # startTime = time.time()
     byteArray = openFile('hash')
-
     signatureArray = [0 for i in range(len(byteArray))]
 
     for i, value in enumerate(byteArray):
         signatureArray[i] = str(value**e % n)
 
+    print(signatureArray)
     signatureString = " "
     signatureString = signatureString.join(signatureArray)
 
-    # with open("signature", "w") as signatureFile:
-    #    signatureFile.write(signatureString)
+    print("ini enkripsi hash : ", signatureString)
 
-    # encryptTime = time.time() - startTime
     return signatureString
 
 
@@ -117,6 +138,7 @@ def decryptDigest(signature, d, n):  # dekripsi menggunakan RSA
     #    messageDigestFile.write(messageDigestString)
 
     # decryptTime = time.time() - startTime
+    print(messageDigestString)
     return messageDigestString
 
 
@@ -226,6 +248,7 @@ d = 1019
 # verifying('message.txt', 'signature', d, n)
 
 # KASUS 2
+# generateHash('message.txt')
 signature = createSignature('message.txt', n, e)
 joinSignatureToMessage('message.txt', signature)
 print(readSignatureInMessage('message.txt'))
