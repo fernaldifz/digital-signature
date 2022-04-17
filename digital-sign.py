@@ -1,8 +1,7 @@
 import random
 import time
 import hashlib
-
-from sqlalchemy import false
+from tkinter import messagebox
 
 
 class KeyPair:
@@ -64,7 +63,7 @@ class KeyPair:
 def generateHash(message):
     # inisialisasi objek hash menggunakan sha-1
     hashEngine = hashlib.new('sha1')
-    
+
     with open(message, "r") as file:
         lines = file.readlines()
     with open(message, "w") as file:
@@ -72,25 +71,24 @@ def generateHash(message):
             # if line.strip("\n") != '<ds>':
             if not line.rstrip('\n').startswith('<ds>') and not line.rstrip('\n').endswith('</ds>'):
                 file.write(line)
-                print('aku ditambah : ' + line)
-    
-    
+                # print('aku ditambah : ' + line)
+
     with open(message, "r") as file:
         lines = file.readlines()
-        print(lines)
+        # print(lines)
     with open(message, "w") as file:
         for line in lines:
             if line == lines[-1]:
                 file.write(line.strip())
             else:
                 file.write(line)
-                
+
     with open(message, 'rb') as file:
         fileBinary = file.read(2**16)  # read per 2**16 size block
-        
+
         while (len(fileBinary) > 0):
             # update hingga EoF file / concate block block
-            
+
             hashEngine.update(fileBinary)
             fileBinary = file.read(2**16)
 
@@ -103,6 +101,7 @@ def generateHash(message):
 
     return decimalHex
 
+
 def encryptDigest(n, e):  # enkripsi menggunakan RSA
     byteArray = openFile('hash')
     signatureArray = [0 for i in range(len(byteArray))]
@@ -110,11 +109,11 @@ def encryptDigest(n, e):  # enkripsi menggunakan RSA
     for i, value in enumerate(byteArray):
         signatureArray[i] = str(value**e % n)
 
-    print(signatureArray)
+    # print(signatureArray)
     signatureString = " "
     signatureString = signatureString.join(signatureArray)
 
-    print("ini enkripsi hash : ", signatureString)
+    # print("ini enkripsi hash : ", signatureString)
 
     return signatureString
 
@@ -155,10 +154,11 @@ def saveSignature(signatureString):
 
 def joinSignatureToMessage(pathMessage, signatureString):
     with open(pathMessage) as messageFile:
-        if "<ds>" in messageFile.read():
-            signatureJoined = True
-        else:
-            signatureJoined = False
+        lines = messageFile.readlines()
+        signatureJoined = False
+        for line in lines:
+            if line.rstrip('\n').startswith('<ds>') and line.rstrip('\n').endswith('</ds>'):
+                signatureJoined = True
 
     if (signatureJoined):
         numberLines = sum(1 for line in open(pathMessage))
@@ -176,13 +176,14 @@ def joinSignatureToMessage(pathMessage, signatureString):
 
 def readSignatureInMessage(message):
     with open(message) as messageFile:
-        if "<ds>" in messageFile.read():  # cari <ds>
-            signatureJoined = True
-        else:
-            signatureJoined = False
+        lines = messageFile.readlines()
+        signatureJoined = False
+        for line in lines:
+            if line.rstrip('\n').startswith('<ds>') and line.rstrip('\n').endswith('</ds>'):
+                signatureJoined = True
 
     # ngecek jumlah newlines di txt
-    numberLines = sum(1 for line in open(message))
+    numberLines = len(lines)
 
     if (signatureJoined):
         with open(message, 'r') as messageFile:
@@ -191,6 +192,18 @@ def readSignatureInMessage(message):
         # ceritanya menghilangkan <ds> dan </ds>, jadi dapat isinya aja
         signatureInMessage = data[4:len(data) - 5:]
         return signatureInMessage
+    else:
+        messagebox.showinfo(
+            "Warning", "Tidak ada digital signature di message, gagal melihat digital signature")
+
+
+def deleteSignatureInMessage(message):
+    with open(message, "r") as messageFile:
+        lines = messageFile.readlines()
+    with open(message, "w") as messageFile:
+        for line in lines:
+            if not line.rstrip('\n').startswith('<ds>') and not line.rstrip('\n').endswith('</ds>'):
+                messageFile.write(line)
 
 
 def signing(message, n, e):
@@ -249,7 +262,9 @@ d = 1019
 
 # KASUS 2
 # generateHash('message.txt')
-signature = createSignature('message.txt', n, e)
-joinSignatureToMessage('message.txt', signature)
+# signature = createSignature('message.txt', n, e)
+# joinSignatureToMessage('message.txt', signature)
 print(readSignatureInMessage('message.txt'))
+# deleteSignatureInMessage('message.txt')
+
 # verifying('message.txt', 'signature', d, n)
