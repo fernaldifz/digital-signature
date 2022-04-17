@@ -219,8 +219,8 @@ def verifyingOtherFile(messageSent, signature, d, n):  # Penerima melakukan veri
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
         print("pesan asli")
     else:
-        messagebox.showinfo("Warning", "Pesan telah diganti!")
-        print("pesan telah diganti!")
+        messagebox.showinfo(
+            "Warning", "Pesan atau tanda-tangan digital telah diganti!")
 
 
 def signingSameFile(message, n, e):
@@ -240,8 +240,8 @@ def verifyingSameFile(messageSent, d, n):
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
         print("pesan asli")
     else:
-        messagebox.showinfo("Warning", "Pesan telah diganti!")
-        print("pesan telah diganti!")
+        messagebox.showinfo(
+            "Warning", "Pesan atau tanda-tangan digital telah diganti!")
 
 
 def openFile(Path):
