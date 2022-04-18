@@ -18,6 +18,26 @@ class Signing(QDialog):
         self.selectfile.clicked.connect(self.selectFile)
         self.selectkey.clicked.connect(self.selectKey)
         self.savefile.clicked.connect(self.saveSign)
+        self.savesignature.clicked.connect(self.saveDigitalSignature)
+
+    def saveDigitalSignature(self):
+        if len(self.file.toPlainText()) != 0:
+            self.warn_red.setText("")
+            option = QFileDialog.Options()
+            option |= QFileDialog.DontUseNativeDialog
+
+            file = QFileDialog.getSaveFileName(
+                widget, "Save Digital Signature", "signature", "All Files (*)", options=option)
+
+            if file[0] != '':
+                file1 = open(file[0], "w", encoding="utf-8")
+                digitalSignature = ds.readSignatureInMessage("dummy.txt")
+                file1.write(digitalSignature)
+                file1.close()
+                self.warn_green.setText("Digital Signature has been saved !")
+        else:
+            self.warn_red.setText("Select file first !")
+        pass
 
     def gotoGenKey(self):
         genKeyPair = GenKey()
