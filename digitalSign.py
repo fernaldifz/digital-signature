@@ -5,21 +5,10 @@ from tkinter import messagebox
 
 
 def generatePairNumbers():
-    primes = []
-    p, q, counter = 0, 0, 0
-
-    for i in range(2**16, 2**64):
-        if isPrime(i):
-            primes.append(i)
-            counter += 1
-
-        if counter == 100:
-            break
-
-    while p == q:
-        p, q = random.choice(primes), random.choice(primes)
-
-    print("p dan q sudah ada")
+    print("mulai cari p dan q")
+    pairNumbers = [random.randint(2**8, 2**14) for i in range(2)]
+    p = int(pairNumbers[0])
+    q = int(pairNumbers[1])
     return p, q
 
 
@@ -42,23 +31,20 @@ def modInverse(e, phi):
 
 
 def generatePairKey():  # pembangkit pasangan kunci (privat dan publik)
-    p, q = generatePairNumbers()
-    N = p*q
-    phi = (p-1)*(q-1)
+    d = None
+    while (d == None):
+        p, q = generatePairNumbers()
+        N = p*q
+        phi = (p-1)*(q-1)
 
-    print("mulai cari e")
+        print("mulai cari e")
+        e = int([random.randint(2, phi//(2**8)) for i in range(1)][0])
 
-    publicKeyCandidate = []
-    for e in range(2, phi//(2**16)):
-        if isPrime(e):
-            publicKeyCandidate.append(e)
+        print("mulai cari d")
+        d = modInverse(e, phi)
 
-    print("mulai cari d")
-
-    e = random.choice(publicKeyCandidate)
-
-    d = modInverse(e, phi)
-
+        print("memastikan d tidak None")
+    print("selesai")
     return (e, N), (d, N)
 
 
