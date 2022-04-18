@@ -5,7 +5,7 @@ from tkinter import messagebox
 
 def generatePairNumbers():
     print("mulai cari p dan q")
-    pairNumbers = [random.randint(2**8, 2**14) for i in range(2)]
+    pairNumbers = [random.randint(2**8, 2**12) for i in range(2)]
     p = int(pairNumbers[0])
     q = int(pairNumbers[1])
     return p, q
