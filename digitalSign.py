@@ -4,60 +4,59 @@ import hashlib
 from tkinter import messagebox
 
 
-class KeyPair:
-    def generatePairNumbers(self):
-        primes = []
-        p, q, counter = 0, 0, 0
+def generatePairNumbers():
+    primes = []
+    p, q, counter = 0, 0, 0
 
-        for i in range(2**6, 2**8):
-            if self.isPrime(i):
-                primes.append(i)
-                counter += 1
+    for i in range(2**6, 2**8):
+        if isPrime(i):
+            primes.append(i)
+            counter += 1
 
-            if counter == 100:
-                break
+        if counter == 100:
+            break
 
-        while p == q:
-            p, q = random.choice(primes), random.choice(primes)
+    while p == q:
+        p, q = random.choice(primes), random.choice(primes)
 
-        print("p dan q sudah ada")
-        return p, q
+    print("p dan q sudah ada")
+    return p, q
 
-    def isPrime(self, num):
-        if num == 2:
-            return True
-        elif num < 2:
-            return False
-        else:
-            for i in range(2, num, 1):
-                if num % i == 0:
-                    return False
+def isPrime(num):
+    if num == 2:
         return True
+    elif num < 2:
+        return False
+    else:
+        for i in range(2, num, 1):
+            if num % i == 0:
+                return False
+    return True
 
-    def modInverse(self, e, phi):
-        for d in range(1, phi):
-            if ((e % phi) * (d % phi)) % phi == 1:
-                return d
+def modInverse(e, phi):
+    for d in range(1, phi):
+        if ((e % phi) * (d % phi)) % phi == 1:
+            return d
 
-    def generatePairKey(self):  # pembangkit pasangan kunci (privat dan publik)
-        p, q = self.generatePairNumbers()
-        N = p*q
-        phi = (p-1)*(q-1)
+def generatePairKey():  # pembangkit pasangan kunci (privat dan publik)
+    p, q = generatePairNumbers()
+    N = p*q
+    phi = (p-1)*(q-1)
 
-        print("mulai cari e")
+    print("mulai cari e")
 
-        publicKeyCandidate = []
-        for e in range(2, phi//(2**8)):
-            if self.isPrime(e):
-                publicKeyCandidate.append(e)
+    publicKeyCandidate = []
+    for e in range(2, phi//(2**8)):
+        if isPrime(e):
+            publicKeyCandidate.append(e)
 
-        print("mulai cari d")
+    print("mulai cari d")
 
-        e = random.choice(publicKeyCandidate)
+    e = random.choice(publicKeyCandidate)
 
-        d = self.modInverse(e, phi)
+    d = modInverse(e, phi)
 
-        return (e, N), (d, N)
+    return (e, N), (d, N)
 
 
 def generateHash(message):
@@ -106,12 +105,12 @@ def generateHash(message):
     return decimalHex
 
 
-def encryptDigest(n, e):  # enkripsi menggunakan RSA
+def encryptDigest(n, key):  # enkripsi menggunakan RSA
     byteArray = openFile('hash')
     signatureArray = [0 for i in range(len(byteArray))]
 
     for i, value in enumerate(byteArray):
-        signatureArray[i] = str(value**e % n)
+        signatureArray[i] = str(value**key % n)
 
     # print(signatureArray)
     signatureString = " "
@@ -122,12 +121,12 @@ def encryptDigest(n, e):  # enkripsi menggunakan RSA
     return signatureString
 
 
-def decryptDigest(signatureArray, d, n):  # dekripsi menggunakan RSA
+def decryptDigest(signatureArray, key, n):  # dekripsi menggunakan RSA
     # startTime = time.time()
 
     messageDigestArray = [0 for i in range(len(signatureArray))]
     for i, value in enumerate(signatureArray):
-        messageDigestArray[i] = chr(int(value)**d % n)
+        messageDigestArray[i] = chr(int(value)**key % n)
 
     messageDigestString = ""
     for i in range(len(messageDigestArray)):
@@ -140,9 +139,9 @@ def decryptDigest(signatureArray, d, n):  # dekripsi menggunakan RSA
     return messageDigestString
 
 
-def createSignature(message, n, e):  # Pengirim membuat signature
+def createSignature(message, n, d):  # Pengirim membuat signature
     generateHash(message)
-    signatureString = encryptDigest(n, e)
+    signatureString = encryptDigest(n, d)
     return signatureString
 
 
@@ -219,12 +218,12 @@ def deleteSignatureInMessage(message):
                     i += 1
 
 
-def signingOtherFile(message, n, e):
-    signatureString = createSignature(message, n, e)
+def signingOtherFile(message, n, d):
+    signatureString = createSignature(message, n, d)
     saveSignatureToFile(signatureString)
 
 
-def verifyingOtherFile(messageSent, signature, d, n):  # Penerima melakukan verifikasi
+def verifyingOtherFile(messageSent, signature, e, n):  # Penerima melakukan verifikasi
     generateHash(messageSent)
     hashFile = open('hash', "r").readlines()
     hashString = hashFile[0]
@@ -232,7 +231,7 @@ def verifyingOtherFile(messageSent, signature, d, n):  # Penerima melakukan veri
     signatureFile = open(signature, "r").readlines()
     signatureString = signatureFile[0]
     signatureArray = signatureString.split()
-    digest = decryptDigest(signatureArray, d, n)
+    digest = decryptDigest(signatureArray, e, n)
 
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
         print("pesan asli")
@@ -241,15 +240,15 @@ def verifyingOtherFile(messageSent, signature, d, n):  # Penerima melakukan veri
             "Warning", "Pesan atau tanda-tangan digital telah diganti!")
 
 
-def signingSameFile(message, n, e):
-    signatureString = createSignature(message, n, e)
+def signingSameFile(message, n, d):
+    signatureString = createSignature(message, n, d)
     joinSignatureToMessage('message.txt', signatureString)
 
 
-def verifyingSameFile(messageSent, d, n):
+def verifyingSameFile(messageSent, e, n):
     signatureArray = readSignatureInMessage(messageSent).split()
 
-    digest = decryptDigest(signatureArray, d, n)
+    digest = decryptDigest(signatureArray, e, n)
 
     generateHash(messageSent)
     hashFile = open('hash', "r").readlines()
@@ -261,6 +260,18 @@ def verifyingSameFile(messageSent, d, n):
         messagebox.showinfo(
             "Warning", "Pesan atau tanda-tangan digital telah diganti!")
 
+def unpackKeyTuples(string):
+    sX, sY = '',''
+
+    for idx in range(0,string.index(',')):
+        if string[idx] != "(":
+           sX += string[idx]
+
+    for idx in range(string.index(',')+1, len(string)):
+        if string[idx] != ")":
+           sY += string[idx]
+
+    return int(sX),int(sY)
 
 def openFile(Path):
     file = open(Path, "rb")
@@ -283,11 +294,11 @@ d = 1019
 #############
 
 # KASUS 1, signature di file terpisah
-#signingOtherFile('message.txt', n, e)
-#verifyingOtherFile('message.txt', 'signature', d, n)
+#signingOtherFile('message.txt', n, d)
+#verifyingOtherFile('message.txt', 'signature', e, n)
 
 # KASUS 2, signature di message (file sama)
-#signingSameFile('message.txt', n, e)
-#verifyingSameFile('message.txt', d, n)
+# signingSameFile('message.txt', n, d)
+verifyingSameFile('message.txt', e, n)
 
 # deleteSignatureInMessage('message.txt')

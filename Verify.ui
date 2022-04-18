@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>720</width>
+    <width>722</width>
     <height>512</height>
    </rect>
   </property>
@@ -43,7 +43,7 @@ font-size: 40px;
 color: #FCE417;</string>
     </property>
     <property name="text">
-     <string>Signing</string>
+     <string>Verify</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_5">
@@ -70,7 +70,7 @@ color: #FCE417;
      <string/>
     </property>
    </widget>
-   <widget class="QPushButton" name="verify">
+   <widget class="QPushButton" name="signing">
     <property name="geometry">
      <rect>
       <x>635</x>
@@ -92,15 +92,15 @@ color: #101920;
 </string>
     </property>
     <property name="text">
-     <string>Verify</string>
+     <string>Signing</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="signfile">
+   <widget class="QPushButton" name="verifyfile">
     <property name="geometry">
      <rect>
-      <x>150</x>
-      <y>250</y>
-      <width>111</width>
+      <x>190</x>
+      <y>330</y>
+      <width>151</width>
       <height>41</height>
      </rect>
     </property>
@@ -114,7 +114,7 @@ font-size: 12px;
 color: #101920;</string>
     </property>
     <property name="text">
-     <string>Select File</string>
+     <string>Select file to Verify</string>
     </property>
    </widget>
    <widget class="QLabel" name="key">
@@ -271,48 +271,27 @@ color: lime;
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="savefile">
+   <widget class="QTextEdit" name="digest">
     <property name="geometry">
      <rect>
-      <x>200</x>
-      <y>300</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #FFE715;
-border-radius: 2px;
-font-family: Open Sans;
-font-style: normal;
-font-weight: 600;
-font-size: 12px;
-color: #101920;</string>
-    </property>
-    <property name="text">
-     <string>Save file</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="signfile_2">
-    <property name="geometry">
-     <rect>
-      <x>270</x>
+      <x>130</x>
       <y>250</y>
-      <width>121</width>
-      <height>41</height>
+      <width>281</width>
+      <height>71</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">background: #FFE715;
-border-radius: 2px;
-font-family: Open Sans;
+     <string notr="true">font-family: Open Sans;
 font-style: normal;
-font-weight: 600;
-font-size: 12px;
+font-weight: bold;
+font-size: 10px;
+/* identical to box height */
+
+
 color: #101920;</string>
     </property>
-    <property name="text">
-     <string>Sign</string>
+    <property name="readOnly">
+     <bool>true</bool>
     </property>
    </widget>
   </widget>
