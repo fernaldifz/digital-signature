@@ -216,7 +216,7 @@ def verifyingOtherFile(messageSent, signature, e, n):  # Penerima melakukan veri
             "Message", "Pesan asli!")
     else:
         messagebox.showinfo(
-            "Warning", "Pesan atau tanda-tangan digital telah diganti!")
+            "Warning", "Pesan, tanda-tangan digital, atau kunci telah diganti!")
 
 
 def signingSameFile(message, n, d):
@@ -238,7 +238,7 @@ def verifyingSameFile(messageSent, e, n):
             "Message", "Pesan asli!")
     else:
         messagebox.showinfo(
-            "Warning", "Pesan atau tanda-tangan digital telah diganti!")
+            "Warning", "Pesan, tanda-tangan digital, atau kunci telah diganti!")
 
 
 def unpackKeyTuples(string):
