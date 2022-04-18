@@ -1,5 +1,4 @@
 import random
-import time
 import hashlib
 from tkinter import messagebox
 
@@ -60,7 +59,6 @@ def generateHash(message):
             # if line.strip("\n") != '<ds>':
             if not line.rstrip('\n').startswith('<ds>') and not line.rstrip('\n').endswith('</ds>'):
                 file.write(line)
-                # print('aku ditambah : ' + line)
 
     with open(message, "r") as file:
         lines = file.readlines()
@@ -101,18 +99,13 @@ def encryptDigest(n, key):  # enkripsi menggunakan RSA
     for i, value in enumerate(byteArray):
         signatureArray[i] = str(value**key % n)
 
-    # print(signatureArray)
     signatureString = " "
     signatureString = signatureString.join(signatureArray)
-
-    # print("ini enkripsi hash : ", signatureString)
 
     return signatureString
 
 
 def decryptDigest(signatureArray, key, n):  # dekripsi menggunakan RSA
-    # startTime = time.time()
-
     messageDigestArray = [0 for i in range(len(signatureArray))]
     for i, value in enumerate(signatureArray):
         messageDigestArray[i] = chr(int(value)**key % n)
@@ -121,10 +114,6 @@ def decryptDigest(signatureArray, key, n):  # dekripsi menggunakan RSA
     for i in range(len(messageDigestArray)):
         messageDigestString += messageDigestArray[i]
 
-    # with open("messageDigest", "w", encoding="utf-8") as messageDigestFile:
-    #    messageDigestFile.write(messageDigestString)
-
-    # decryptTime = time.time() - startTime
     return messageDigestString
 
 
@@ -169,14 +158,14 @@ def readSignatureInMessage(message):
             if line.rstrip('\n').startswith('<ds>') and line.rstrip('\n').endswith('</ds>'):
                 signatureJoined = True
 
-    # ngecek jumlah newlines di txt
+    # mengecek jumlah newlines di txt
     numberLines = len(lines)
 
     if (signatureJoined):
         with open(message, 'r') as messageFile:
             data = messageFile.readlines()
             data = data[numberLines-1]
-        # ceritanya menghilangkan <ds> dan </ds>, jadi dapat isinya aja
+        # Menghilangkan <ds> dan </ds>, jadi dapat isinya aja
         signatureInMessage = data[4:len(data) - 5:]
         return signatureInMessage
     else:
@@ -244,7 +233,7 @@ def verifyingSameFile(messageSent, e, n):
     hashFile = open('hash', "r").readlines()
     hashString = hashFile[0]
 
-    if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
+    if hashString == digest:
         messagebox.showinfo(
             "Message", "Pesan asli!")
     else:
@@ -273,25 +262,3 @@ def openFile(Path):
 
     byteArray = bytearray(data)
     return byteArray
-
-# kP = KeyPair()
-# keys = kP.generatePairKey()
-# print(keys)
-
-
-#############
-# SEMENTARA #
-n = 3337
-e = 79
-d = 1019
-#############
-
-# KASUS 1, signature di file terpisah
-#signingOtherFile('message.txt', n, d)
-#verifyingOtherFile('message.txt', 'signature', e, n)
-
-# KASUS 2, signature di message (file sama)
-# signingSameFile('message.txt', n, d)
-# verifyingSameFile('message.txt', e, n)
-
-# deleteSignatureInMessage('message.txt')
