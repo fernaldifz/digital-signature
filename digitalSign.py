@@ -237,7 +237,8 @@ def verifyingOtherFile(messageSent, signature, e, n):  # Penerima melakukan veri
     digest = decryptDigest(signatureArray, e, n)
 
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
-        print("pesan asli")
+        messagebox.showinfo(
+            "Message", "Pesan asli!")
     else:
         messagebox.showinfo(
             "Warning", "Pesan atau tanda-tangan digital telah diganti!")
@@ -259,7 +260,7 @@ def verifyingSameFile(messageSent, e, n):
 
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
         messagebox.showinfo(
-            "Warning", "Pesan asli!")
+            "Message", "Pesan asli!")
     else:
         messagebox.showinfo(
             "Warning", "Pesan atau tanda-tangan digital telah diganti!")
