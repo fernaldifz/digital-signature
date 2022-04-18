@@ -10,7 +10,7 @@ from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDialog, QApplication, QStackedWidget, QTabWidget, QWidget, QMessageBox, QPushButton, QFileDialog, QVBoxLayout
 
 class Signing(QDialog):
-    e,N = 0,0
+    d,N = 0,0
     
     def __init__(self):
         super(Signing, self).__init__()
@@ -18,6 +18,7 @@ class Signing(QDialog):
         self.verify.clicked.connect(self.goforVerify)
         self.genKey.clicked.connect(self.gotoGenKey)
         self.signfile.clicked.connect(self.signing)
+        self.selectfile.clicked.connect(self.selectFile)
         self.selectkey.clicked.connect(self.selectKey)
         self.savefile.clicked.connect(self.saveSign)
 
@@ -45,7 +46,7 @@ class Signing(QDialog):
             self.key.setWordWrap(True)
             self.key.setText(file[0])
 
-    def signing(self):
+    def selectFile(self):
         if self.key.text() != "":
             self.warn_red.setText("")
             self.warn_green.setText("")
@@ -62,6 +63,30 @@ class Signing(QDialog):
                 self.file.setText(text)
         else:
             self.warn_red.setText("Select key First!")
+
+    def signing(self):
+        if self.file.toPlainText() != "":
+            self.warn_red.setText("")
+            self.warn_green.setText("")
+            text = self.file.toPlainText()
+            with open ('dummy.txt','w') as file:
+                file.write("")
+            with open ('dummy.txt','w') as file:
+                file.write(text)
+            
+            ds.signingSameFile('dummy.txt', self.N, self.d)
+
+            with open ('dummy.txt','r') as file:
+                lines = file.readlines()
+            
+            text = ''
+            
+            for line in lines:
+                text += line
+            print(text)
+            self.file.setText(text)
+        else:
+            self.warn_red.setText("Select file First!")
     
     def goforVerify(self):
         verifying = Verify()
@@ -74,13 +99,13 @@ class Signing(QDialog):
             option=QFileDialog.Options()
             option|=QFileDialog.DontUseNativeDialog
 
-            file=QFileDialog.getSaveFileName(widget,"Save Encryption","cipherResult.txt","All Files (*)",options=option)
+            file=QFileDialog.getSaveFileName(widget,"Save Encryption","signedText.txt","All Files (*)",options=option)
             
             if file[0] != '':
                 file1 = open(file[0], "w",encoding="utf-8")
-                file2 = open("encrypted","r",encoding="utf-8")
-                cipher = file2.read()
-                file1.write(cipher)
+                file2 = open("dummy.txt","r",encoding="utf-8")
+                digitalSignature = file2.read()
+                file1.write(digitalSignature)
                 file1.close()
                 file2.close()
                 self.warn_green.setText("File has been saved !")

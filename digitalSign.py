@@ -242,7 +242,7 @@ def verifyingOtherFile(messageSent, signature, e, n):  # Penerima melakukan veri
 
 def signingSameFile(message, n, d):
     signatureString = createSignature(message, n, d)
-    joinSignatureToMessage('message.txt', signatureString)
+    joinSignatureToMessage(message, signatureString)
 
 
 def verifyingSameFile(messageSent, e, n):
@@ -299,6 +299,6 @@ d = 1019
 
 # KASUS 2, signature di message (file sama)
 # signingSameFile('message.txt', n, d)
-verifyingSameFile('message.txt', e, n)
+# verifyingSameFile('message.txt', e, n)
 
 # deleteSignatureInMessage('message.txt')

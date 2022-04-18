@@ -95,7 +95,7 @@ color: #101920;
      <string>Verify</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="signfile">
+   <widget class="QPushButton" name="selectfile">
     <property name="geometry">
      <rect>
       <x>150</x>
@@ -271,29 +271,7 @@ color: lime;
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QPushButton" name="savefile">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>300</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #FFE715;
-border-radius: 2px;
-font-family: Open Sans;
-font-style: normal;
-font-weight: 600;
-font-size: 12px;
-color: #101920;</string>
-    </property>
-    <property name="text">
-     <string>Save file</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="signfile_2">
+   <widget class="QPushButton" name="signfile">
     <property name="geometry">
      <rect>
       <x>270</x>
@@ -312,7 +290,29 @@ font-size: 12px;
 color: #101920;</string>
     </property>
     <property name="text">
-     <string>Sign</string>
+     <string>Sign File</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="savefile">
+    <property name="geometry">
+     <rect>
+      <x>200</x>
+      <y>300</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #FFE715;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920;</string>
+    </property>
+    <property name="text">
+     <string>Save File</string>
     </property>
    </widget>
   </widget>
