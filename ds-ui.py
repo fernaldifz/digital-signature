@@ -195,6 +195,9 @@ class Verify(QDialog):
         if self.file.toPlainText() != "":
             self.warn_red.setText("")
             self.warn_green.setText("")
+            text = self.file.toPlainText()
+            with open('dummyVerify.txt', 'w') as file:
+                    file.write(text)
             with open('dummyVerify.txt', 'r') as file:
                 ds.verifyingSameFile('dummyVerify.txt', self.e, self.N)
         else:
