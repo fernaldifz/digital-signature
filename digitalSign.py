@@ -8,7 +8,7 @@ def generatePairNumbers():
     primes = []
     p, q, counter = 0, 0, 0
 
-    for i in range(2**6, 2**8):
+    for i in range(2**16, 2**64):
         if isPrime(i):
             primes.append(i)
             counter += 1
@@ -22,6 +22,7 @@ def generatePairNumbers():
     print("p dan q sudah ada")
     return p, q
 
+
 def isPrime(num):
     if num == 2:
         return True
@@ -33,10 +34,12 @@ def isPrime(num):
                 return False
     return True
 
+
 def modInverse(e, phi):
     for d in range(1, phi):
         if ((e % phi) * (d % phi)) % phi == 1:
             return d
+
 
 def generatePairKey():  # pembangkit pasangan kunci (privat dan publik)
     p, q = generatePairNumbers()
@@ -46,7 +49,7 @@ def generatePairKey():  # pembangkit pasangan kunci (privat dan publik)
     print("mulai cari e")
 
     publicKeyCandidate = []
-    for e in range(2, phi//(2**8)):
+    for e in range(2, phi//(2**64)):
         if isPrime(e):
             publicKeyCandidate.append(e)
 
@@ -261,18 +264,20 @@ def verifyingSameFile(messageSent, e, n):
         messagebox.showinfo(
             "Warning", "Pesan atau tanda-tangan digital telah diganti!")
 
-def unpackKeyTuples(string):
-    sX, sY = '',''
 
-    for idx in range(0,string.index(',')):
+def unpackKeyTuples(string):
+    sX, sY = '', ''
+
+    for idx in range(0, string.index(',')):
         if string[idx] != "(":
-           sX += string[idx]
+            sX += string[idx]
 
     for idx in range(string.index(',')+1, len(string)):
         if string[idx] != ")":
-           sY += string[idx]
+            sY += string[idx]
 
-    return int(sX),int(sY)
+    return int(sX), int(sY)
+
 
 def openFile(Path):
     file = open(Path, "rb")
