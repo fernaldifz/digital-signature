@@ -196,13 +196,13 @@ class Verify(QDialog):
         widget.setCurrentIndex(widget.currentIndex()+1)
 
     def verifying(self):
-        if self.file.toPlainText() != "":
+        if self.file.toPlainText() != "" and self.signature.text() == "":
             self.warn_red.setText("")
             self.warn_green.setText("")
             with open('dummyVerify.txt', 'r') as file:
                 ds.verifyingSameFile('dummyVerify.txt', self.e, self.N)
         else:
-            self.warn_red.setText("Select File First!")
+            self.warn_red.setText("Select File First and invalid input!")
 
     def gotoGenKey(self):
         genKeyPair = GenKey()
