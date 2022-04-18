@@ -124,7 +124,31 @@ class Verify(QDialog):
         self.verify.clicked.connect(self.verifying)
         self.genKey.clicked.connect(self.gotoGenKey)
         self.selectkey.clicked.connect(self.selectKey)
+        self.selectsignature.clicked.connect(self.selectSignature)
+        self.verifywithds.clicked.connect(self.verifyingWithSignature)
 
+    def verifyingWithSignature(self):
+        if (self.key.text() != "") and (self.signature.text() != "") and (self.file.toPlainText() != ""):
+            self.warn_red.setText("")
+            self.warn_green.setText("")
+            text = self.file.toPlainText()
+            with open('dummyVerify.txt', 'w') as file:
+                    file.write(text)
+            with open('dummyVerify.txt', 'r') as file:
+                ds.verifyingOtherFile('dummyVerify.txt',self.signature.text(),self.e, self.N)
+        else:
+            self.warn_red.setText("Select Key, Signature, and File!")
+
+    def selectSignature(self):
+        self.warn_red.setText("")
+        self.warn_green.setText("")
+        option = QFileDialog.Options()
+        file = QFileDialog.getOpenFileName(
+            widget, "Select Signature", "Default File", "All Files (*)", options=option)
+
+        self.signature.setWordWrap(True)
+        self.signature.setText(file[0])
+    
     def selectKey(self):
         self.warn_red.setText("")
         self.warn_green.setText("")
