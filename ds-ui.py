@@ -18,26 +18,6 @@ class Signing(QDialog):
         self.selectfile.clicked.connect(self.selectFile)
         self.selectkey.clicked.connect(self.selectKey)
         self.savefile.clicked.connect(self.saveSign)
-        self.savesignature.clicked.connect(self.saveDigitalSignature)
-
-    def saveDigitalSignature(self):
-        if len(self.file.toPlainText()) != 0:
-            self.warn_red.setText("")
-            option = QFileDialog.Options()
-            option |= QFileDialog.DontUseNativeDialog
-
-            file = QFileDialog.getSaveFileName(
-                widget, "Save Digital Signature", "signature", "All Files (*)", options=option)
-
-            if file[0] != '':
-                file1 = open(file[0], "w", encoding="utf-8")
-                digitalSignature = ds.readSignatureInMessage("dummy.txt")
-                file1.write(digitalSignature)
-                file1.close()
-                self.warn_green.setText("Digital Signature has been saved !")
-        else:
-            self.warn_red.setText("Select file first !")
-        pass
 
     def gotoGenKey(self):
         genKeyPair = GenKey()
@@ -88,14 +68,14 @@ class Signing(QDialog):
             self.warn_red.setText("")
             self.warn_green.setText("")
             text = self.file.toPlainText()
-            with open('dummy.txt', 'w') as file:
+            with open('signedMessage.txt', 'w') as file:
                 file.write("")
-            with open('dummy.txt', 'w') as file:
+            with open('signedMessage.txt', 'w') as file:
                 file.write(text)
 
-            ds.signingSameFile('dummy.txt', self.N, self.d)
+            ds.signingSameFile('signedMessage.txt', self.N, self.d)
 
-            with open('dummy.txt', 'r') as file:
+            with open('signedMessage.txt', 'r') as file:
                 lines = file.readlines()
 
             text = ''
@@ -119,11 +99,11 @@ class Signing(QDialog):
             option |= QFileDialog.DontUseNativeDialog
 
             file = QFileDialog.getSaveFileName(
-                widget, "Save Encryption", "signedText.txt", "All Files (*)", options=option)
+                widget, "Save Encryption", "signedMessage.txt", "All Files (*)", options=option)
 
             if file[0] != '':
                 file1 = open(file[0], "w", encoding="utf-8")
-                file2 = open("dummy.txt", "r", encoding="utf-8")
+                file2 = open("signedMessage.txt", "r", encoding="utf-8")
                 digitalSignature = file2.read()
                 file1.write(digitalSignature)
                 file1.close()
@@ -195,9 +175,6 @@ class Verify(QDialog):
         if self.file.toPlainText() != "":
             self.warn_red.setText("")
             self.warn_green.setText("")
-            text = self.file.toPlainText()
-            with open('dummyVerify.txt', 'w') as file:
-                    file.write(text)
             with open('dummyVerify.txt', 'r') as file:
                 ds.verifyingSameFile('dummyVerify.txt', self.e, self.N)
         else:
