@@ -49,7 +49,7 @@ def generatePairKey():  # pembangkit pasangan kunci (privat dan publik)
     print("mulai cari e")
 
     publicKeyCandidate = []
-    for e in range(2, phi//(2**64)):
+    for e in range(2, phi//(2**16)):
         if isPrime(e):
             publicKeyCandidate.append(e)
 
