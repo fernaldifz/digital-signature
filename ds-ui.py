@@ -35,10 +35,10 @@ class Signing(QDialog):
             
             if file[0] != '':
                 tuples = open(file[0],'r')
-                publicKey = tuples.read()
+                key = tuples.read()
                 tuples.close()
 
-                d,N = ds.unpackKeyTuples(publicKey)
+                d,N = ds.unpackKeyTuples(key)
                 
                 self.d = d
                 self.N = N
@@ -115,13 +115,14 @@ class Signing(QDialog):
        
 
 class Verify(QDialog):
-    d,N = 0,0
+    e,N = 0,0
 
     def __init__(self):
         super(Verify, self).__init__()
         loadUi("Verify.ui", self)
         self.signing.clicked.connect(self.goforSigning)
-        self.verifyfile.clicked.connect(self.verifying)
+        self.selectfile.clicked.connect(self.selectFile)
+        self.verify.clicked.connect(self.verifying)
         self.genKey.clicked.connect(self.gotoGenKey)
         self.selectkey.clicked.connect(self.selectKey)
 
@@ -129,22 +130,41 @@ class Verify(QDialog):
             self.warn_red.setText("")
             self.warn_green.setText("")
             option=QFileDialog.Options()
-            file = QFileDialog.getOpenFileName(widget,"Open Private Key","Default File","*.pri",options=option)
+            file = QFileDialog.getOpenFileName(widget,"Open Key","Default File","*.pub",options=option)
             
             if file[0] != '':
                 tuples = open(file[0],'r')
-                privateKey = tuples.read()
+                key = tuples.read()
                 tuples.close()
 
-                d,N = RSA.unpackKeyTuples(privateKey)
+                e,N = ds.unpackKeyTuples(key)
                 
                 
-                self.d = d
+                self.e = e
                 self.N = N
-                print(self.d,self.N)
+                print(self.e,self.N)
 
             self.key.setWordWrap(True)
             self.key.setText(file[0])
+
+    def selectFile(self):
+        if self.key.text() != "":
+            self.warn_red.setText("")
+            self.warn_green.setText("")
+            option=QFileDialog.Options()
+            file = QFileDialog.getOpenFileName(widget,"Open file for signing","Default File","All Files (*)",options=option)
+            if file[0] != '':
+                with open(file[0], "r") as file:
+                    lines = file.readlines()
+                text = ''
+
+                for line in lines:
+                    text += line
+                with open ('dummyVerify.txt','w') as file:
+                    file.write(text)
+                self.file.setText(text)
+        else:
+            self.warn_red.setText("Select key First!")
 
     def goforSigning(self):
         sign = Signing()
@@ -152,42 +172,13 @@ class Verify(QDialog):
         widget.setCurrentIndex(widget.currentIndex()+1)
     
     def verifying(self):
-        if self.key.text() != "":
+        if self.file.toPlainText() != "":
             self.warn_red.setText("")
             self.warn_green.setText("")
-            option=QFileDialog.Options()
-            file = QFileDialog.getOpenFileName(widget,"Open file to encrypt","Default File","All Files (*)",options=option)
-            if file[0] != '':
-                if file[0].endswith('.txt'):
-                    plain, dtime = RSA.decryptFile(file[0],self.d,self.N)
-                    # print(file[0])
-                    text = ''
-                    for idx in plain:
-                        text += idx
-
-                    self.file.setText(text)
-                    self.time.setWordWrap(True)
-                    self.time.setText(str(round(dtime,4))+" S")
-                    self.size.setWordWrap(True)
-                    self.size.setText(str(RSA.showFileSize("encrypted")) + " B")
-                else:
-                    plain, dtime = RSA.decryptFile(file[0],self.d,self.N)
-                    text = ''
-                    for idx in plain:
-                        text += idx
-                    self.file.setText(text)
-                    for i, value in enumerate(plain):
-                        plain[i] = ord(value)
-                    byteplain = bytearray(plain)
-                    file = open("decrypted",'wb')
-                    file.write(byteplain)
-                    file.close()
-                    self.time.setWordWrap(True)
-                    self.time.setText(str(round(dtime,4))+" S")
-                    self.size.setWordWrap(True)
-                    self.size.setText(str(RSA.showFileSize("encrypted")) + " B")          
+            with open('dummyVerify.txt','r') as file:
+                ds.verifyingSameFile('dummyVerify.txt', self.e, self.N)
         else:
-            self.warn_red.setText("Select private key First!")
+            self.warn_red.setText("Select File First!")
     
     def gotoGenKey(self):
         genKeyPair = GenKey()

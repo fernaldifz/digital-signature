@@ -255,7 +255,8 @@ def verifyingSameFile(messageSent, e, n):
     hashString = hashFile[0]
 
     if hashString == digest:  # ceritanya mau ngecek pesan ini asli apa nggk
-        print("pesan asli")
+        messagebox.showinfo(
+            "Warning", "Pesan asli!")
     else:
         messagebox.showinfo(
             "Warning", "Pesan atau tanda-tangan digital telah diganti!")

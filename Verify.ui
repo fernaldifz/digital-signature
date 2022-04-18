@@ -95,28 +95,6 @@ color: #101920;
      <string>Signing</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="verifyfile">
-    <property name="geometry">
-     <rect>
-      <x>190</x>
-      <y>330</y>
-      <width>151</width>
-      <height>41</height>
-     </rect>
-    </property>
-    <property name="styleSheet">
-     <string notr="true">background: #FFE715;
-border-radius: 2px;
-font-family: Open Sans;
-font-style: normal;
-font-weight: 600;
-font-size: 12px;
-color: #101920;</string>
-    </property>
-    <property name="text">
-     <string>Select file to Verify</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="key">
     <property name="geometry">
      <rect>
@@ -271,27 +249,48 @@ color: lime;
      <set>Qt::AlignCenter</set>
     </property>
    </widget>
-   <widget class="QTextEdit" name="digest">
+   <widget class="QPushButton" name="selectfile">
     <property name="geometry">
      <rect>
-      <x>130</x>
+      <x>150</x>
       <y>250</y>
-      <width>281</width>
-      <height>71</height>
+      <width>111</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="styleSheet">
-     <string notr="true">font-family: Open Sans;
+     <string notr="true">background: #FFE715;
+border-radius: 2px;
+font-family: Open Sans;
 font-style: normal;
-font-weight: bold;
-font-size: 10px;
-/* identical to box height */
-
-
+font-weight: 600;
+font-size: 12px;
 color: #101920;</string>
     </property>
-    <property name="readOnly">
-     <bool>true</bool>
+    <property name="text">
+     <string>Select File</string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="verify">
+    <property name="geometry">
+     <rect>
+      <x>270</x>
+      <y>250</y>
+      <width>121</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">background: #FFE715;
+border-radius: 2px;
+font-family: Open Sans;
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+color: #101920;</string>
+    </property>
+    <property name="text">
+     <string>Verify File</string>
     </property>
    </widget>
   </widget>
