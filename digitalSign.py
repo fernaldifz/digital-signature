@@ -5,9 +5,13 @@ from tkinter import messagebox
 
 def generatePairNumbers():
     print("mulai cari p dan q")
-    pairNumbers = [random.randint(2**8, 2**12) for i in range(2)]
-    p = int(pairNumbers[0])
-    q = int(pairNumbers[1])
+    p = 0
+    q = 0
+    while(not(isPrime(p))):
+        p = int([random.randint(2**8, 2**12) for i in range(1)][0])
+
+    while(not(isPrime(q))):
+        q = int([random.randint(2**8, 2**12) for i in range(1)][0])
     return p, q
 
 
@@ -37,7 +41,12 @@ def generatePairKey():  # pembangkit pasangan kunci (privat dan publik)
         phi = (p-1)*(q-1)
 
         print("mulai cari e")
-        e = int([random.randint(2, phi//(2**8)) for i in range(1)][0])
+        publicKeyCandidate = []
+        for e in range(2, phi//(2**8)):
+            if isPrime(e):
+                publicKeyCandidate.append(e)
+
+        e = random.choice(publicKeyCandidate)
 
         print("mulai cari d")
         d = modInverse(e, phi)
